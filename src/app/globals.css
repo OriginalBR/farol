@@ -1,0 +1,178 @@
+@import "tailwindcss";
+
+:root {
+  --bg-main: #0E1520;
+  --bg-surface: #16202C;
+  --bg-surface-elevated: #1D2A38;
+  --bg-surface-high: #243547;
+  --text-primary: #ECEFF3;
+  --text-secondary: #8FA0B0;
+  --text-muted: #52667A;
+  --border-main: #26333F;
+  --border-light: #37485A;
+
+  /* Default Accent: Amber */
+  --accent: #F2A65A;
+  --accent-rgb: 242, 166, 90;
+  --accent-glow: rgba(242, 166, 90, 0.25);
+  --accent-glow-strong: rgba(242, 166, 90, 0.45);
+  --accent-surface: rgba(242, 166, 90, 0.08);
+  --accent-border: rgba(242, 166, 90, 0.3);
+}
+
+[data-accent="mint"] {
+  --accent: #7FE7C4;
+  --accent-rgb: 127, 231, 196;
+  --accent-glow: rgba(127, 231, 196, 0.25);
+  --accent-glow-strong: rgba(127, 231, 196, 0.45);
+  --accent-surface: rgba(127, 231, 196, 0.08);
+  --accent-border: rgba(127, 231, 196, 0.3);
+}
+
+[data-accent="pink"] {
+  --accent: #F2879A;
+  --accent-rgb: 242, 135, 154;
+  --accent-glow: rgba(242, 135, 154, 0.25);
+  --accent-glow-strong: rgba(242, 135, 154, 0.45);
+  --accent-surface: rgba(242, 135, 154, 0.08);
+  --accent-border: rgba(242, 135, 154, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: var(--font-space-grotesk), sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography Helpers */
+.font-space {
+  font-family: var(--font-space-grotesk), sans-serif;
+}
+
+.font-fraunces {
+  font-family: var(--font-fraunces), serif;
+}
+
+.font-mono-tech {
+  font-family: var(--font-ibm-plex-mono), monospace;
+}
+
+/* Transmission Scanline Animation */
+@keyframes scanline {
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+.animate-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--accent) 50%,
+    transparent 100%
+  );
+  box-shadow: 0 0 12px var(--accent-glow-strong);
+  animation: scanline 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+/* CRT Subtle Screen Flicker Grid Overlay */
+.crt-grid {
+  background-size: 100% 4px;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.015) 50%,
+    rgba(0, 0, 0, 0.015) 50%
+  );
+}
+
+/* Pulse radar for "AO VIVO" */
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 0 0 var(--accent-glow);
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.7;
+    box-shadow: 0 0 10px 4px var(--accent-glow);
+  }
+}
+
+.animate-pulse-live {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Audio Wave Visualizer Bars */
+@keyframes waveHeight {
+  0%, 100% {
+    height: 6px;
+  }
+  50% {
+    height: 24px;
+  }
+}
+
+.audio-bar {
+  animation: waveHeight 0.8s ease-in-out infinite alternate;
+}
+
+/* Subtle Glassmorphism */
+.glass-surface {
+  background: rgba(22, 32, 44, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-main);
+}
+
+.glass-elevated {
+  background: rgba(29, 42, 56, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-light);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0E1520;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #26333F;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}

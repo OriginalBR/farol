@@ -1,0 +1,92 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                String             @id @default(uuid())
+  deviceId          String             @unique
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  accentColor       String             @default("amber") // "amber" | "mint" | "pink"
+  signalSource      String             @default("mixed") // "curated" | "ai" | "mixed"
+  streak            Int                @default(0)
+  lastCheckin       DateTime?
+  profile           Profile?
+  affirmations      Affirmation[]
+  checkIns          CheckIn[]
+  journalEntries    JournalEntry[]
+  scheduleTimes     ScheduleTime[]
+  pushSubscriptions PushSubscription[]
+}
+
+model Profile {
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mood           String?
+  obstacles      String   // JSON stringified array
+  desiredFeeling String?
+  goalText       String?
+  category       String   @default("foco")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Affirmation {
+  id             String         @id @default(uuid())
+  userId         String?        // null = banco curado global
+  user           User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  source         String         // "curated" | "ai"
+  categoryKey    String?        // "autoestima", "abundancia", "amor", "foco", "saude", "superacao", "gratidao", "proposito"
+  text           String
+  isFavorite     Boolean        @default(false)
+  timesReceived  Int            @default(0)
+  createdAt      DateTime       @default(now())
+  journalEntries JournalEntry[]
+}
+
+model CheckIn {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      String   // "YYYY-MM-DD"
+  timestamp DateTime @default(now())
+
+  @@unique([userId, date])
+}
+
+model JournalEntry {
+  id                  String       @id @default(uuid())
+  userId              String
+  user                User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date                String       // "YYYY-MM-DD"
+  text                String
+  linkedAffirmationId String?
+  linkedAffirmation   Affirmation? @relation(fields: [linkedAffirmationId], references: [id], onDelete: SetNull)
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+}
+
+model ScheduleTime {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  time      String   // "HH:mm"
+  label     String?
+  createdAt DateTime @default(now())
+}
+
+model PushSubscription {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+}
